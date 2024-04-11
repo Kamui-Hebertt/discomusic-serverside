@@ -39,6 +39,10 @@ Route.group(()=> {
 
 
 
+  Route.get('/music/user/:userId', 'MusicsController.listMusicByUserId');
+  Route.get('/music/all', 'MusicsController.listAllMusic');
+
+
   Route.post('/createMusicWithoutFile', 'MusicsController.createMusicWithoutFile')
 
   Route.post('/uploadNewMusic/:musicId', 'MusicsController.uploadFileForMusic')

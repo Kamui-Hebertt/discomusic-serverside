@@ -118,4 +118,53 @@ export default class MusicsController {
 
 
 
+
+
+
+  public async listMusicByUserId({ params, response }: HttpContextContract) {
+    try {
+      const { userId } = params;
+
+      // Retrieve music entries associated with the user ID
+      const musics = await Music.query().where('userId', userId).select('*');
+
+      // Return the list of music entries
+      return response.status(200).json({
+        message: 'Music list retrieved successfully',
+        data: musics,
+      });
+    } catch (error) {
+      // If an error occurs, return an error status
+      return response.status(500).json({
+        message: 'Failed to list music',
+        error: error.message,
+      });
+    }
+  }
+
+
+
+
+
+  public async listAllMusic({ response }: HttpContextContract) {
+    try {
+      // Retrieve all music entries
+      const musics = await Music.all();
+
+      // Return the list of all music entries
+      return response.status(200).json({
+        message: 'All music list retrieved successfully',
+        data: musics,
+      });
+    } catch (error) {
+      // If an error occurs, return an error status
+      return response.status(500).json({
+        message: 'Failed to list all music',
+        error: error.message,
+      });
+    }
+  }
+
+
+
 }
