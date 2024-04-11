@@ -29,5 +29,21 @@ Route.group(()=> {
 
   Route.post('/registerNewUser', 'UsersController.registerUser')
 
+  Route.post('/login', 'UsersController.login')
+
+
+  Route.post('/logout', 'UsersController.logout').middleware('auth')
+
+
+  Route.get('/checkLogin', 'UsersController.checkTokenAuth').middleware('auth')
+
+
+
+  Route.post('/createMusicWithoutFile', 'MusicsController.createMusicWithoutFile')
+
+  Route.post('/uploadNewMusic/:musicId', 'MusicsController.uploadFileForMusic')
+
+  Route.delete('/deleteSong/:musicId', 'MusicsController.deleteMusicById')
+
 }).prefix('/api')
 

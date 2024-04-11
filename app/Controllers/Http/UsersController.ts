@@ -1,3 +1,4 @@
+import Hash from '@ioc:Adonis/Core/Hash'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 import Database from "@ioc:Adonis/Lucid/Database"
@@ -67,6 +68,87 @@ export default class UsersController {
       await trx.rollback()
 
       return response.status(500).json({ error: 'Erro interno' })
+    }
+  }
+
+
+
+  public async login({ auth, request, response }: HttpContextContract) {
+    const email = request.input('email')
+    const password = request.input('password')
+
+    try {
+      // Find the user by email
+      const user = await User.findBy('email', email)
+
+      if (!user) {
+        return response.unauthorized('E-mail ou senha inválidos')
+      }
+
+
+
+
+
+      // Compare the provided plaintext password with the hashed password in the database
+      const passwordValid = await Hash.verify(user.password, password)
+
+      if (!passwordValid) {
+        return response.unauthorized('Senha inválida')
+      }
+      const expiresIn = 9 * 365 * 999 * 999 * 9 * 10 // 2 hours
+
+      // Use the auth API to generate a token for the user
+      const token = await auth.use('api').login(user, { expiresIn })
+
+      console.log(token)
+      return response.status(200).json({
+        userId: user.id,
+        user: user.name,
+
+        email: user.email,
+
+        token: token.token,
+
+        expiresIn: token.expiresIn,
+      })
+    } catch (error) {
+      console.error(error)
+      return response.status(500).json({ error: 'Internal Server Error' })
+    }
+  }
+
+
+
+
+
+
+
+
+  public async checkTokenAuth({ auth, response }) {
+    try {
+
+      await auth.check()
+
+      // User is authenticated, return success response
+      return response.json({ status: 'success', message: 'User is logged in' })
+    } catch (error) {
+      // User is not authenticated, return error response
+      return response.status(401).json({ status: 'error', message: 'Unauthorized' })
+    }
+  }
+
+
+
+
+  public async logout({ auth, response }: HttpContextContract) {
+    try {
+
+      const auth1 = await auth.use('api').logout()
+      console.log(auth1)
+      return response.status(200).json({ message: 'Logout successful' })
+    } catch (error) {
+      console.error(error)
+      return response.status(500).json({ error: 'Internal Server Error' })
     }
   }
 

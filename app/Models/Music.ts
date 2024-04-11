@@ -3,6 +3,7 @@ import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import User from './User'
 
 export default class Music extends BaseModel {
+  public static table = 'musics'
   @column({ isPrimary: true })
   public id: number
 
@@ -14,6 +15,9 @@ export default class Music extends BaseModel {
 
   @column()
   public url: string
+
+  @column({ columnName: 'userId' })
+  public userId:number
 
 
   @column()

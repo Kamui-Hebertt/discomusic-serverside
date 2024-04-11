@@ -6,10 +6,10 @@ export default class Music extends BaseSchema {
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
-      table.string('title').notNullable()
-      table.string('artist').notNullable()
-      table.string('url').notNullable()
-      table.string('file').notNullable()
+      table.string('title').nullable()
+      table.string('artist').nullable()
+      table.string('url').nullable()
+      table.string('file').nullable()
       table.integer('userId').unsigned().references('id').inTable('users').onDelete('CASCADE')
 
       /**
